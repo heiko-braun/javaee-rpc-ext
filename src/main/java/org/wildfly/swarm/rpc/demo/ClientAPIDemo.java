@@ -20,6 +20,9 @@ import rx.Subscriber;
 public class ClientAPIDemo {
 
 
+    /**
+     * A synchronous invocation encupsulated in a command.
+     */
     @IsolatedCommand(fallbackMethod = "dateFallback")
     public String syncIsolatedCommand() {
         Client client = ClientBuilder.newClient();
@@ -30,9 +33,16 @@ public class ClientAPIDemo {
         return response.readEntity(String.class);
     }
 
+    /**
+     * A asynchronous invocation with rx-based Observable responses, still encupsulated in a command.
+     * Allows for scatter-gather scenarios and tight integration with rx-based invocations.
+     */
     @IsolatedCommand(fallbackMethod = "dateFallback")
     public Observable<String> asyncIsolatedCommand() {
 
+        // here we wrap the invocation response on an Observable that will
+        // trigger the invocation upon subcription
+        // a more useful example would be a forward invocation to anotehr rx-based API
         return Observable.create(new Observable.OnSubscribe<String>() {
 
             @Override
@@ -57,6 +67,9 @@ public class ClientAPIDemo {
 
     }
 
+    /**
+     * The fallback method for both approaches
+     */
     public String dateFallback() {
         return "{\n" +
                 "   \"time\": \"00:00:00 AM\",\n" +
