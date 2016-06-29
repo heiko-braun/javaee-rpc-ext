@@ -34,15 +34,16 @@ public class ClientAPIDemo {
     }
 
     /**
-     * A asynchronous invocation with rx-based Observable responses, still encupsulated in a command.
+     * An asynchronous invocation with rx-based Observable responses, still encupsulated in a command.
      * Allows for scatter-gather scenarios and tight integration with rx-based invocations.
      */
     @IsolatedCommand(fallbackMethod = "dateFallback")
     public Observable<String> asyncIsolatedCommand() {
 
-        // here we wrap the invocation response on an Observable that will
-        // trigger the invocation upon subcription
-        // a more useful example would be a forward invocation to anotehr rx-based API
+        // Here we wrap the invocation response on an Observable that will
+        // trigger the invocation upon subcription, but that's just for demonstration purposes
+
+        // A more useful example would be a forward invocation to anotehr rx-based API
         return Observable.create(new Observable.OnSubscribe<String>() {
 
             @Override
