@@ -12,13 +12,14 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Weld weld = new Weld();
+        WeldContainer container = weld.initialize();
 
+        container.select(DemoBean.class).get().begin();
 
-        try (WeldContainer container = weld.initialize()) {
+        System.out.println("Press any key to terminate ...");
 
-            container.select(DemoBean.class).get().begin();
-
-        }
+        System.in.read();
+        container.shutdown();
 
     }
 }

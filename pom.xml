@@ -41,6 +41,16 @@
         <artifactId>junit</artifactId>
         <version>4.12</version>
     </dependency>
+    <dependency>
+      <groupId>com.yammer.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.hystrix</groupId>
+      <artifactId>hystrix-codahale-metrics-publisher</artifactId>
+      <version>1.5.3</version>
+    </dependency>
 
   </dependencies>
 

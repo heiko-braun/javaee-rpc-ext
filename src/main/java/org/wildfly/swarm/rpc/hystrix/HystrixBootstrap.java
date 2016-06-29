@@ -9,7 +9,10 @@ import javax.ejb.Startup;
 import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.inject.Inject;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
 import com.netflix.hystrix.Hystrix;
+import com.netflix.hystrix.contrib.codahalemetricspublisher.HystrixCodaHaleMetricsPublisher;
 import com.netflix.hystrix.strategy.HystrixPlugins;
 
 /**
@@ -23,15 +26,21 @@ public class HystrixBootstrap {
     @Inject
     ManagedThreadFactory threadFactory;
 
+    final MetricRegistry metrics = new MetricRegistry();
+
     @PostConstruct
     public void onStartup() {
         System.out.println("Initialising hystrix ...");
         HystrixPlugins.getInstance().registerConcurrencyStrategy(new EEConcurrencyStrategy(threadFactory));
+        HystrixPlugins.getInstance().registerMetricsPublisher(new HystrixCodaHaleMetricsPublisher(metrics));
     }
 
     @PreDestroy
     public void onShutdown() {
         System.out.println("Shutting down hystrix ...");
         Hystrix.reset(1, TimeUnit.SECONDS);
+
+        ConsoleReporter.forRegistry(metrics).outputTo(System.out).build().report();
     }
+
 }
