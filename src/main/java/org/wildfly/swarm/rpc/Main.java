@@ -14,7 +14,11 @@ public class Main {
         Weld weld = new Weld();
         WeldContainer container = weld.initialize();
 
-        container.select(DemoBean.class).get().begin();
+        try {
+            container.select(DemoBean.class).get().begin();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         System.out.println("Press any key to terminate ...");
 

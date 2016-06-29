@@ -11,6 +11,7 @@ import javax.interceptor.InvocationContext;
 
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.wildfly.swarm.rpc.api.IsolatedCommand;
+import rx.Observable;
 
 @IsolatedCommand
 @Interceptor
@@ -27,6 +28,7 @@ public class HystrixInterceptor implements Serializable {
     public Object wrapCommand(InvocationContext invocationContext)
             throws Exception {
 
+        boolean async = Observable.class == invocationContext.getMethod().getReturnType();
         IsolatedCommand metaData = invocationContext.getMethod().getAnnotation(IsolatedCommand.class);
         Optional<String> fallback = metaData.fallbackMethod()!=null ? Optional.of(metaData.fallbackMethod()) : Optional.empty();
 
@@ -37,7 +39,14 @@ public class HystrixInterceptor implements Serializable {
                     + invocationContext.getMethod().getName() + " in class "
                     + invocationContext.getMethod().getDeclaringClass().getName());
 
-            return new GenericCommand(beanManager, invocationContext, fallback).execute();
+
+            if(async) {
+                // cold observable
+                return new GenericObservableCommand(beanManager, invocationContext, fallback).toObservable();
+            }
+            else {
+                return new GenericCommand(beanManager, invocationContext, fallback).execute();
+            }
 
         } finally {
             context.close();

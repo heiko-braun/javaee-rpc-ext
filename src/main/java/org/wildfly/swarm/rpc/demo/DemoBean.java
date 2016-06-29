@@ -4,6 +4,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.wildfly.swarm.rpc.hystrix.HystrixBootstrap;
+import rx.Observable;
+import rx.Observer;
 
 /**
  * @author Heiko Braun
@@ -20,7 +22,31 @@ public class DemoBean {
 
     public void begin() {
 
-        String date = clientAPI.hystrixEncupsulatedInvocation();
-        System.out.println("Received " +date);
+        // simple isolated command
+        String date = clientAPI.syncIsolatedCommand();
+        System.out.println("Received sync" +date);
+
+        // async isolated command
+        Observable observable = clientAPI.asyncIsolatedCommand();
+        observable.subscribe(new Observer() {
+
+            @Override
+            public void onCompleted() {
+                System.out.println("Received async completed");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Object v) {
+                System.out.println("Received async: " + v);
+            }
+
+        });
+
+
     }
 }
