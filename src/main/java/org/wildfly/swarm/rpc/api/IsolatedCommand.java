@@ -12,14 +12,14 @@ import javax.interceptor.InterceptorBinding;
 
 
 /**
- * This annotation used to specify some methods which should be processes as hystrix commands.
+ * This annotation used to specify some methods which should be processes as isolated commands.
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
 @InterceptorBinding
-public @interface HystrixCommand {
+public @interface IsolatedCommand {
 
     /**
      * The command group key is used for grouping together commands such as for reporting,
@@ -69,7 +69,7 @@ public @interface HystrixCommand {
      *
      *      private String getByIdFallback(String id) {...}
      * </code>
-     * Also a fallback method can be annotated with {@link HystrixCommand}
+     * Also a fallback method can be annotated with {@link IsolatedCommand}
      * <p/>
      *
      * @return method name

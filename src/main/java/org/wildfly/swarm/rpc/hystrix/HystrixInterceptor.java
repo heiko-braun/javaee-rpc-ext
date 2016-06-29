@@ -10,9 +10,9 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
-import org.wildfly.swarm.rpc.api.HystrixCommand;
+import org.wildfly.swarm.rpc.api.IsolatedCommand;
 
-@HystrixCommand
+@IsolatedCommand
 @Interceptor
 public class HystrixInterceptor implements Serializable {
 
@@ -27,7 +27,7 @@ public class HystrixInterceptor implements Serializable {
     public Object wrapCommand(InvocationContext invocationContext)
             throws Exception {
 
-        HystrixCommand metaData = invocationContext.getMethod().getAnnotation(HystrixCommand.class);
+        IsolatedCommand metaData = invocationContext.getMethod().getAnnotation(IsolatedCommand.class);
         Optional<String> fallback = metaData.fallbackMethod()!=null ? Optional.of(metaData.fallbackMethod()) : Optional.empty();
 
         HystrixRequestContext context = HystrixRequestContext.initializeContext();

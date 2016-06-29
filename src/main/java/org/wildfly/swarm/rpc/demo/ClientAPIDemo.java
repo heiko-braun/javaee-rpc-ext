@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
-import org.wildfly.swarm.rpc.api.HystrixCommand;
+import org.wildfly.swarm.rpc.api.IsolatedCommand;
 
 /**
  * @author Heiko Braun
@@ -18,7 +18,7 @@ import org.wildfly.swarm.rpc.api.HystrixCommand;
 public class ClientAPIDemo {
 
 
-    @HystrixCommand(fallbackMethod = "dateFallback")
+    @IsolatedCommand(fallbackMethod = "dateFallback")
     public String hystrixEncupsulatedInvocation() {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://date.jsontest.com/");
