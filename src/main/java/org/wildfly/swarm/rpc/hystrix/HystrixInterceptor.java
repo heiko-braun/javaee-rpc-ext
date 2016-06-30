@@ -31,6 +31,7 @@ public class HystrixInterceptor implements Serializable {
         boolean async = Observable.class == invocationContext.getMethod().getReturnType();
         CircuitBreaker metaData = invocationContext.getMethod().getAnnotation(CircuitBreaker.class);
         Optional<String> fallback = metaData.fallbackMethod()!=null ? Optional.of(metaData.fallbackMethod()) : Optional.empty();
+        Optional<String> threadPool = metaData.threadPoolKey() !=null ? Optional.of(metaData.threadPoolKey()) : Optional.empty();
 
         HystrixRequestContext context = HystrixRequestContext.initializeContext();
 
@@ -42,10 +43,10 @@ public class HystrixInterceptor implements Serializable {
 
             if(async) {
                 // cold observable
-                return new GenericObservableCommand(beanManager, invocationContext, fallback).toObservable();
+                return new GenericObservableCommand(beanManager, invocationContext, fallback, threadPool).toObservable();
             }
             else {
-                return new GenericCommand(beanManager, invocationContext, fallback).execute();
+                return new GenericCommand(beanManager, invocationContext, fallback, threadPool).execute();
             }
 
         } finally {

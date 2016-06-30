@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.interceptor.InvocationContext;
 
-import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixObservableCommand;
+import com.netflix.hystrix.HystrixThreadPoolKey;
 import org.jboss.weld.bean.ManagedBean;
 import rx.Observable;
 
@@ -26,7 +26,7 @@ public class GenericObservableCommand extends HystrixObservableCommand<Object> {
 
     private final Optional<String> fallback;
 
-    public GenericObservableCommand(BeanManager beanManager, InvocationContext ic, Optional<String> fallback) {
+    public GenericObservableCommand(BeanManager beanManager, InvocationContext ic, Optional<String> fallback, Optional<String> threadPool) {
 
         super(
                 HystrixObservableCommand.Setter
@@ -36,6 +36,9 @@ public class GenericObservableCommand extends HystrixObservableCommand<Object> {
                         .andCommandKey(
                                 HystrixCommandKey.Factory.asKey(ic.getMethod().getName())
                         )
+                // threadPoolKey is missing from HystrixObseravableCommand.Setter
+                // See https://github.com/Netflix/Hystrix/pull/1264
+
 
         );
 
@@ -69,7 +72,7 @@ public class GenericObservableCommand extends HystrixObservableCommand<Object> {
                         )
                 );
             } catch (Throwable t) {
-                throw new RuntimeException("Failed to resolve fallback", t);
+                result = Observable.error(new RuntimeException("Failed to resolve fallback", t));
             }
         }
 

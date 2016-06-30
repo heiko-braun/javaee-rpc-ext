@@ -50,8 +50,8 @@ public @interface CircuitBreaker {
     String commandKey() default "";
 
     /**
-     * The thread-pool key is used to represent a
-     * ThreadPool for monitoring, metrics publishing, caching and other such uses.
+     * The thread-pool key is to assign commands to a different thread-pool.
+     * (effectively creates bulk heads)
      *
      * @return thread pool key
      */

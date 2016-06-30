@@ -23,7 +23,7 @@ public class ClientAPIDemo {
     /**
      * A synchronous invocation encupsulated in a command.
      */
-    @CircuitBreaker(fallbackMethod = "dateFallback")
+    @CircuitBreaker(fallbackMethod = "dateFallback", threadPoolKey = "firstPool")
     public String syncIsolatedCommand() {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://date.jsontest.com/");

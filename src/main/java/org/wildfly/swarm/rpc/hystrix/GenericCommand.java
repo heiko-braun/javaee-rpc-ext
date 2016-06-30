@@ -9,6 +9,7 @@ import javax.interceptor.InvocationContext;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixThreadPoolKey;
 import org.jboss.weld.bean.ManagedBean;
 
 /**
@@ -23,16 +24,17 @@ public class GenericCommand extends HystrixCommand<Object> {
 
     private final Optional<String> fallback;
 
-    public GenericCommand(BeanManager beanManager, InvocationContext ic, Optional<String> fallback) {
+    public GenericCommand(BeanManager beanManager, InvocationContext ic, Optional<String> fallback, Optional<String> threadPool) {
 
         super(
-                Setter.withGroupKey(
-                        HystrixCommandGroupKey.Factory.asKey(ic.getMethod().getDeclaringClass().getSimpleName()))
-                                .andCommandKey(
-                                        HystrixCommandKey.Factory.asKey(ic.getMethod().getName())
-                                )
+                Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(ic.getMethod().getDeclaringClass().getSimpleName()))
+                        .andCommandKey(
+                                HystrixCommandKey.Factory.asKey(ic.getMethod().getName())
+                        )
+                        .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(threadPool.orElse(null)))
 
         );
+
 
         this.beanManager = beanManager;
         this.ic = ic;
