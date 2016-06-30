@@ -1,5 +1,7 @@
 package org.wildfly.swarm.rpc.discovery;
 
+import java.net.URI;
+
 /**
  * @author Heiko Braun
  * @since 30/06/16
@@ -24,12 +26,17 @@ public class Server {
         return port;
     }
 
+    public URI asHttp() {
+        return URI.create("http://"+getHost()+":"+getPort());
+    }
+
     public String getId() {
         return id;
     }
 
-    public void setAlive(boolean isAliveFlag) {
+    public Server setAlive(boolean isAliveFlag) {
         this.isAliveFlag = isAliveFlag;
+        return this;
     }
 
     public boolean isAlive() {

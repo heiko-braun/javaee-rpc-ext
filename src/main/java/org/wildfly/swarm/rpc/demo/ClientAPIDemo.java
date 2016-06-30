@@ -1,5 +1,7 @@
 package org.wildfly.swarm.rpc.demo;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
@@ -22,10 +24,6 @@ import rx.Observable;
 @ApplicationScoped
 public class ClientAPIDemo {
 
-
-    @Inject
-    @ServerList(service = "date-service")
-    private ServiceTargets<Server> serviceTargets;
 
     /**
      * A synchronous invocation encupsulated in a command.
@@ -69,6 +67,29 @@ public class ClientAPIDemo {
             }
         });
 
+    }
+
+    @Inject
+    @ServerList(service = "date-service")
+    private ServiceTargets<Server> serviceTargets;
+
+    public String dynamicAddress() {
+        Client client = ClientBuilder.newClient();
+
+        Optional<WebTarget> target = serviceTargets.get().stream()
+                .filter(Server::isAlive)
+                .findFirst()
+                .map(s -> {
+                    return client.target(s.asHttp());
+                });
+
+        if(target.isPresent()) {
+            Response response = target.get().request(MediaType.APPLICATION_JSON).get();
+            Assert.assertEquals(200, response.getStatus());
+            return response.readEntity(String.class);
+        } else {
+            throw new RuntimeException("No active servers found");
+        }
     }
 
     /**

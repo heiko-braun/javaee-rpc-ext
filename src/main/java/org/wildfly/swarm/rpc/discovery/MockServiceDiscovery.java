@@ -68,7 +68,9 @@ public class MockServiceDiscovery implements ServiceDiscovery {
                 ArrayList<Server> servers = new ArrayList<>(addresses.size());
                 addresses.forEach(a -> {
                     Pair<String, Integer> pair = Server.parseId(a);
-                    servers.add(new Server(pair.first(), pair.second()));
+                    servers.add(
+                            new Server(pair.first(), pair.second()).setAlive(true)
+                    );
                 });
                 return servers;
             }

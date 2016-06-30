@@ -47,6 +47,8 @@ public class DemoBean {
 
         });
 
+        date = clientAPI.dynamicAddress();
+        System.out.println("Received sync" +date);
 
     }
 }
