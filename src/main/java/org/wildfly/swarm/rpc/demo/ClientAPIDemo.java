@@ -44,25 +44,21 @@ public class ClientAPIDemo {
         // trigger the invocation upon subcription, but that's just for demonstration purposes
 
         // A more useful example would be a forward invocation to anotehr rx-based API
-        return Observable.create(new Observable.OnSubscribe<String>() {
+        return Observable.create(subscriber -> {
+            try {
 
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                try {
+                Client client = ClientBuilder.newClient();
+                WebTarget target = client.target("http://date.jsontest.com/");
 
-                    Client client = ClientBuilder.newClient();
-                    WebTarget target = client.target("http://date.jsontest.com/");
+                Response response = target.request(MediaType.APPLICATION_JSON).get();
+                Assert.assertEquals(200, response.getStatus());
 
-                    Response response = target.request(MediaType.APPLICATION_JSON).get();
-                    Assert.assertEquals(200, response.getStatus());
-
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(response.readEntity(String.class));
-                        subscriber.onCompleted();
-                    }
-                } catch (Exception e) {
-                    subscriber.onError(e);
+                if (!subscriber.isUnsubscribed()) {
+                    subscriber.onNext(response.readEntity(String.class));
+                    subscriber.onCompleted();
                 }
+            } catch (Exception e) {
+                subscriber.onError(e);
             }
         });
 
