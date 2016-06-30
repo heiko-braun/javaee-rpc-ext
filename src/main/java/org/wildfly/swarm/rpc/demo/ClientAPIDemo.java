@@ -1,6 +1,7 @@
 package org.wildfly.swarm.rpc.demo;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -9,8 +10,10 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 import org.wildfly.swarm.rpc.api.CircuitBreaker;
+import org.wildfly.swarm.rpc.api.ServerList;
+import org.wildfly.swarm.rpc.discovery.Server;
+import org.wildfly.swarm.rpc.discovery.ServiceTargets;
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * @author Heiko Braun
@@ -19,6 +22,10 @@ import rx.Subscriber;
 @ApplicationScoped
 public class ClientAPIDemo {
 
+
+    @Inject
+    @ServerList(service = "date-service")
+    private ServiceTargets<Server> serviceTargets;
 
     /**
      * A synchronous invocation encupsulated in a command.
