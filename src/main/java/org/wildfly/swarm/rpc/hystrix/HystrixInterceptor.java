@@ -10,10 +10,10 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
-import org.wildfly.swarm.rpc.api.IsolatedCommand;
+import org.wildfly.swarm.rpc.api.CircuitBreaker;
 import rx.Observable;
 
-@IsolatedCommand
+@CircuitBreaker
 @Interceptor
 public class HystrixInterceptor implements Serializable {
 
@@ -29,7 +29,7 @@ public class HystrixInterceptor implements Serializable {
             throws Exception {
 
         boolean async = Observable.class == invocationContext.getMethod().getReturnType();
-        IsolatedCommand metaData = invocationContext.getMethod().getAnnotation(IsolatedCommand.class);
+        CircuitBreaker metaData = invocationContext.getMethod().getAnnotation(CircuitBreaker.class);
         Optional<String> fallback = metaData.fallbackMethod()!=null ? Optional.of(metaData.fallbackMethod()) : Optional.empty();
 
         HystrixRequestContext context = HystrixRequestContext.initializeContext();

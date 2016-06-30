@@ -19,7 +19,7 @@ import javax.interceptor.InterceptorBinding;
 @Inherited
 @Documented
 @InterceptorBinding
-public @interface IsolatedCommand {
+public @interface CircuitBreaker {
 
     /**
      * The command group key is used for grouping together commands such as for reporting,
@@ -33,12 +33,12 @@ public @interface IsolatedCommand {
     String groupKey() default "";
 
     /**
-     * Hystrix command key.
+     * Command key.
      * <p/>
      * default => the name of annotated method. for example:
      * <code>
      *     ...
-     *     @HystrixCommand
+     *     @IsolatedCommand
      *     public User getUserById(...)
      *     ...
      *     the command name will be: 'getUserById'
@@ -51,7 +51,7 @@ public @interface IsolatedCommand {
 
     /**
      * The thread-pool key is used to represent a
-     * HystrixThreadPool for monitoring, metrics publishing, caching and other such uses.
+     * ThreadPool for monitoring, metrics publishing, caching and other such uses.
      *
      * @return thread pool key
      */
@@ -60,16 +60,16 @@ public @interface IsolatedCommand {
 
     /**
      * Specifies a method to process fallback logic.
-     * A fallback method should be defined in the same class where is HystrixCommand.
-     * Also a fallback method should have same signature to a method which was invoked as hystrix command.
+     * A fallback method should be defined in the same class where is IsolatedCommand.
+     * Also a fallback method should have same signature to a method which was invoked as an isolated command.
      * for example:
      * <code>
-     *      @HystrixCommand(fallbackMethod = "getByIdFallback")
+     *      @IsolatedCommand(fallbackMethod = "getByIdFallback")
      *      public String getById(String id) {...}
      *
      *      private String getByIdFallback(String id) {...}
      * </code>
-     * Also a fallback method can be annotated with {@link IsolatedCommand}
+     * Also a fallback method can be annotated with {@link CircuitBreaker}
      * <p/>
      *
      * @return method name

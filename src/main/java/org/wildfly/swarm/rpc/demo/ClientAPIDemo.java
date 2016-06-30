@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
-import org.wildfly.swarm.rpc.api.IsolatedCommand;
+import org.wildfly.swarm.rpc.api.CircuitBreaker;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -23,7 +23,7 @@ public class ClientAPIDemo {
     /**
      * A synchronous invocation encupsulated in a command.
      */
-    @IsolatedCommand(fallbackMethod = "dateFallback")
+    @CircuitBreaker(fallbackMethod = "dateFallback")
     public String syncIsolatedCommand() {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://date.jsontest.com/");
@@ -37,7 +37,7 @@ public class ClientAPIDemo {
      * An asynchronous invocation with rx-based Observable responses, still encupsulated in a command.
      * Allows for scatter-gather scenarios and tight integration with rx-based invocations.
      */
-    @IsolatedCommand(fallbackMethod = "dateFallback")
+    @CircuitBreaker(fallbackMethod = "dateFallback")
     public Observable<String> asyncIsolatedCommand() {
 
         // Here we wrap the invocation response on an Observable that will
