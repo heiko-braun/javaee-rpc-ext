@@ -8,6 +8,7 @@ import javax.interceptor.InvocationContext;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import org.jboss.weld.bean.ManagedBean;
 
 /**
@@ -24,9 +25,13 @@ public class GenericCommand extends HystrixCommand<Object> {
 
     public GenericCommand(BeanManager beanManager, InvocationContext ic, Optional<String> fallback) {
 
-        super(HystrixCommandGroupKey.Factory.asKey(
-                ic.getMethod().getDeclaringClass().getSimpleName()+"#"+
-                        ic.getMethod().getName())
+        super(
+                Setter.withGroupKey(
+                        HystrixCommandGroupKey.Factory.asKey(ic.getMethod().getDeclaringClass().getSimpleName()))
+                                .andCommandKey(
+                                        HystrixCommandKey.Factory.asKey(ic.getMethod().getName())
+                                )
+
         );
 
         this.beanManager = beanManager;

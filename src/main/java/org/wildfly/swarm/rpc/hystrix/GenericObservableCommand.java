@@ -6,7 +6,9 @@ import java.util.Optional;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.interceptor.InvocationContext;
 
+import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixObservableCommand;
 import org.jboss.weld.bean.ManagedBean;
 import rx.Observable;
@@ -26,9 +28,15 @@ public class GenericObservableCommand extends HystrixObservableCommand<Object> {
 
     public GenericObservableCommand(BeanManager beanManager, InvocationContext ic, Optional<String> fallback) {
 
-        super(HystrixCommandGroupKey.Factory.asKey(
-                ic.getMethod().getDeclaringClass().getSimpleName()+"#"+
-                        ic.getMethod().getName())
+        super(
+                HystrixObservableCommand.Setter
+                        .withGroupKey(
+                            HystrixCommandGroupKey.Factory.asKey(ic.getMethod().getDeclaringClass().getSimpleName())
+                        )
+                        .andCommandKey(
+                                HystrixCommandKey.Factory.asKey(ic.getMethod().getName())
+                        )
+
         );
 
         this.beanManager = beanManager;
