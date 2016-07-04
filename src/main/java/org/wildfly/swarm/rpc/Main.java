@@ -2,7 +2,7 @@ package org.wildfly.swarm.rpc;
 
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.wildfly.swarm.rpc.demo.DemoBean;
+import org.wildfly.swarm.rpc.demo.DemoDriverBean;
 
 /**
  * @author Heiko Braun
@@ -15,7 +15,7 @@ public class Main {
         WeldContainer container = weld.initialize();
 
         try {
-            container.select(DemoBean.class).get().begin();
+            container.select(DemoDriverBean.class).get().begin();
         } catch (Exception e) {
             e.printStackTrace();
         }

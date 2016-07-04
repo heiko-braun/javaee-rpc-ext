@@ -19,7 +19,7 @@ import javax.interceptor.InterceptorBinding;
 @Inherited
 @Documented
 @InterceptorBinding
-public @interface ServerList {
+public @interface ServiceDiscovery {
 
     /**
      * The name of the service

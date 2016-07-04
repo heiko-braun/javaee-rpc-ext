@@ -1,9 +1,6 @@
 package org.wildfly.swarm.rpc.demo;
 
-import java.util.Optional;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -12,9 +9,6 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 import org.wildfly.swarm.rpc.api.CircuitBreaker;
-import org.wildfly.swarm.rpc.api.ServerList;
-import org.wildfly.swarm.rpc.discovery.Server;
-import org.wildfly.swarm.rpc.discovery.ServiceTargets;
 import rx.Observable;
 
 /**
@@ -22,7 +16,7 @@ import rx.Observable;
  * @since 29/06/16
  */
 @ApplicationScoped
-public class ClientAPIDemo {
+public class FaultIsolationAPI {
 
 
     /**
@@ -69,31 +63,8 @@ public class ClientAPIDemo {
 
     }
 
-    @Inject
-    @ServerList(service = "date-service")
-    private ServiceTargets<Server> serviceTargets;
-
-    public String dynamicAddress() {
-        Client client = ClientBuilder.newClient();
-
-        Optional<WebTarget> target = serviceTargets.get().stream()
-                .filter(Server::isAlive)
-                .findFirst()
-                .map(s -> {
-                    return client.target(s.asHttp());
-                });
-
-        if(target.isPresent()) {
-            Response response = target.get().request(MediaType.APPLICATION_JSON).get();
-            Assert.assertEquals(200, response.getStatus());
-            return response.readEntity(String.class);
-        } else {
-            throw new RuntimeException("No active servers found");
-        }
-    }
-
     /**
-     * The fallback method for both approaches
+     * The fallback method for both approaches above
      */
     public String dateFallback() {
         return "{\n" +
@@ -102,4 +73,5 @@ public class ClientAPIDemo {
                 "   \"date\": \"01-01-2000\"\n" +
                 "}";
     }
+
 }

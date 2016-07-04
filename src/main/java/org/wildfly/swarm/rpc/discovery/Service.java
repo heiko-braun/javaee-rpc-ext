@@ -6,13 +6,13 @@ import java.net.URI;
  * @author Heiko Braun
  * @since 30/06/16
  */
-public class Server {
+public class Service {
     private String host;
     private int port = 80;
     private String id;
     private boolean isAliveFlag;
 
-    public Server(String host, int port) {
+    public Service(String host, int port) {
         this.host = host;
         this.port = port;
         this.id = host + ":" + port;
@@ -34,7 +34,7 @@ public class Server {
         return id;
     }
 
-    public Server setAlive(boolean isAliveFlag) {
+    public Service setAlive(boolean isAliveFlag) {
         this.isAliveFlag = isAliveFlag;
         return this;
     }

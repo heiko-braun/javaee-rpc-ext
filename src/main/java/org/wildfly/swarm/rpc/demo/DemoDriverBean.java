@@ -12,22 +12,25 @@ import rx.Observer;
  * @since 29/06/16
  */
 @ApplicationScoped
-public class DemoBean {
+public class DemoDriverBean {
 
     @Inject
     HystrixBootstrap hystrixEnv;
 
     @Inject
-    ClientAPIDemo clientAPI;
+    FaultIsolationAPI faultIsolationAPI;
+
+    @Inject
+    ServiceDiscoveryAPI serviceDisocveryAPI;
 
     public void begin() {
 
         // simple isolated command
-        String date = clientAPI.syncIsolatedCommand();
+        String date = faultIsolationAPI.syncIsolatedCommand();
         System.out.println("Received sync" +date);
 
         // async isolated command
-        Observable observable = clientAPI.asyncIsolatedCommand();
+        Observable observable = faultIsolationAPI.asyncIsolatedCommand();
         observable.subscribe(new Observer() {
 
             @Override
@@ -47,7 +50,8 @@ public class DemoBean {
 
         });
 
-        date = clientAPI.dynamicAddress();
+        // manual service discovery
+        date = serviceDisocveryAPI.serviceDiscovery();
         System.out.println("Received sync" +date);
 
     }
