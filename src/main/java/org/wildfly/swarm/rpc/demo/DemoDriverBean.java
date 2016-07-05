@@ -54,5 +54,8 @@ public class DemoDriverBean {
         date = serviceDisocveryAPI.serviceDiscovery();
         System.out.println("Received sync" +date);
 
+        // services come and go
+        serviceDisocveryAPI.activeServices();
+
     }
 }

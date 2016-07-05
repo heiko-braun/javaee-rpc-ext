@@ -1,10 +1,10 @@
-package org.wildfly.swarm.rpc.discovery;
+package org.wildfly.swarm.rpc.api;
 
 import java.util.List;
 
 public interface ServiceTargets<T> {
 
-    List<T> get();
+    List<T> current();
 
     long size();
 }

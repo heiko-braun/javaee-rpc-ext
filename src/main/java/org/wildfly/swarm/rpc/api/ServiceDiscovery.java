@@ -18,7 +18,6 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@InterceptorBinding
 public @interface ServiceDiscovery {
 
     /**

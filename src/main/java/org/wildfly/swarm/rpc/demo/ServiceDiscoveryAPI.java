@@ -1,6 +1,8 @@
 package org.wildfly.swarm.rpc.demo;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -11,9 +13,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
+import org.wildfly.swarm.rpc.api.Service;
 import org.wildfly.swarm.rpc.api.ServiceDiscovery;
-import org.wildfly.swarm.rpc.discovery.Service;
-import org.wildfly.swarm.rpc.discovery.ServiceTargets;
+import org.wildfly.swarm.rpc.api.ServiceTargets;
 
 /**
  * @author Heiko Braun
@@ -23,16 +25,24 @@ import org.wildfly.swarm.rpc.discovery.ServiceTargets;
 public class ServiceDiscoveryAPI {
 
     /**
-     * A cient that manually iterates over the list of discovered services
+     * A client that manually iterates over the list of discovered services
      */
     @Inject
     @ServiceDiscovery(service = "date-service")
     private ServiceTargets<Service> serviceTargets;
 
+
+    public void activeServices() {
+        List<Service> activeServices = serviceTargets.current().stream()
+                .filter(Service::isAlive)
+                .collect(Collectors.toList());
+        System.out.println("Active services: "+ activeServices.size());
+    }
+
     public String serviceDiscovery() {
         Client client = ClientBuilder.newClient();
 
-        Optional<WebTarget> target = serviceTargets.get().stream()
+        Optional<WebTarget> target = serviceTargets.current().stream()
                 .filter(Service::isAlive)
                 .findFirst()
                 .map(s -> client.target(s.asHttp()));

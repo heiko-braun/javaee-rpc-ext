@@ -2,48 +2,56 @@ package org.wildfly.swarm.rpc.discovery;
 
 import java.net.URI;
 
+import org.wildfly.swarm.rpc.api.Service;
+
 /**
  * @author Heiko Braun
  * @since 30/06/16
  */
-public class Service {
+class ServiceImpl implements Service {
+
     private String host;
     private int port = 80;
     private String id;
     private boolean isAliveFlag;
 
-    public Service(String host, int port) {
+    public ServiceImpl(String host, int port) {
         this.host = host;
         this.port = port;
         this.id = host + ":" + port;
     }
 
+    @Override
     public String getHost() {
         return host;
     }
 
+    @Override
     public int getPort() {
         return port;
     }
 
+    @Override
     public URI asHttp() {
         return URI.create("http://"+getHost()+":"+getPort());
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
-    public Service setAlive(boolean isAliveFlag) {
+    public ServiceImpl setAlive(boolean isAliveFlag) {
         this.isAliveFlag = isAliveFlag;
         return this;
     }
 
+    @Override
     public boolean isAlive() {
         return isAliveFlag;
     }
 
-    static Pair<String, Integer> parseId(String id) {
+    static Service parseId(String id) {
         if (id != null) {
             String host = null;
             int port = 80;
@@ -72,7 +80,7 @@ public class Service {
                     throw e;
                 }
             }
-            return new Pair(host, port);
+            return new ServiceImpl(host, port);
         } else {
             return null;
         }
