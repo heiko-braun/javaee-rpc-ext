@@ -31,7 +31,9 @@ public class ServiceDiscoveryAPI {
     @ServiceDiscovery(service = "date-service")
     private ServiceTargets<Service> serviceTargets;
 
-
+    /**
+     * Services come and go
+     */
     public void activeServices() {
         List<Service> activeServices = serviceTargets.current().stream()
                 .filter(Service::isAlive)
@@ -39,6 +41,9 @@ public class ServiceDiscoveryAPI {
         System.out.println("Active services: "+ activeServices.size());
     }
 
+    /**
+     * Derive web targets for use in JAX-RS client API's
+     */
     public String serviceDiscovery() {
         Client client = ClientBuilder.newClient();
 
